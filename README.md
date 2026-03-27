@@ -1,5 +1,5 @@
 This is my personal page
 
 
-Created using [this](https://github.com/janraasch/hugo-bearblog/tree/master) Bear Blog Hugo theme.
+Created using the [Bear Blog Hugo theme.](https://github.com/janraasch/hugo-bearblog/tree/master)
 

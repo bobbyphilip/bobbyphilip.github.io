@@ -8,7 +8,7 @@ weight = 1
 
 **Hi!**
 
-I am Bobby Alex Philip, a software engineer current living in Sydney, Australia.
+I am Bobby Alex Philip, a software engineer currently living in Sydney, Australia.
 
 
 ---
