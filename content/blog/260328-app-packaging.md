@@ -2,8 +2,7 @@
 title = "App packaging on Linux"  
 date = "2026-03-21"  
 description = "Quick guide to building a Debian package from some Go code"
-tags = [ "linux", "debian", "talks", "go" ]
-draft = true
+tags = [ "linux", "debian", "talks", "go" ]  
 +++
 
 I gave a talk at this month's [Sydney Linux Use Group](https://www.slug.org.au/) meetup. There is a meeting on the last Friday of every month. It is a great way to meet fellow enthusiasts and learn something new.
