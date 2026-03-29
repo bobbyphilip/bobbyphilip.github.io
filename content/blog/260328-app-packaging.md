@@ -21,7 +21,7 @@ To look inside the package
  - ``` ar x package-name.deb``` to "unarchive" the package, revealing two compressed tar files ```control.tar.zst``` and ```data.tar.zst```, which on extraction reveals the original files which we packaged up earlier 
 
 
-This glosses over a lot of things like signing the package or actually distributing it. But I think it makes clear the core of what is in a a package. 
+This glosses over a lot of things like signing the package or actually distributing it. But I think it makes clear what is in a package. 
 
 Go binaries being statically linked by default, made building the package very easy. It also enables compiling the code for multiple architectures without having to install any cross-compilers.
 The code and slides I used are [here](https://github.com/bobbyphilip/towel-day-countdown)
