@@ -64,19 +64,35 @@ This has knocked off about 13 seconds from the time, so around 20% less time
 
 Hey I paid for all those cpu cores, and only 1 of them is being used. Also Go is great for concurrency with channels and goroutines.
 
-I have now [implemented](https://github.com/bobbyphilip/go-sandbox/blob/65678f19a81596ae6c2112f484f4c6166d575f26/cmd/coprime-pi/main.go) the producer-consumer pattern. Producers now generate random numbers and sends them as jobs to a channel.
+I have now [implemented](https://github.com/bobbyphilip/go-sandbox/commit/65678f19a81596ae6c2112f484f4c6166d575f26) the producer-consumer pattern. Producers now generate random numbers and sends them as jobs to a channel.
 Consumers get the jobs from the channel, check if they are co-prime and eventually the number of coprimes get totalled up.  What could go wrong?
 
 ![image](/images/260608/morepower-time.png)
 
-Turns out, pretty much everything. The wall time for completing this has shot up to 350 seconds.  The only silver lining is the cpu usage has gone up from 100% to 423%,  which is still only about 25% of what it can go up to. System time, which is the amount of CPU time spent inside the Linux kernel has gone up to around 4 minutes. What is it doing there, which it didnt have to do earlier.
+Turns out, pretty much everything. The wall time for completing this has shot up to 350 seconds.  The only silver lining is the cpu usage has gone up from 100% to 423%,  which is still only about 25% of what it can go up to. System time, which is the amount of CPU time spent inside the Linux kernel has gone up to around 4 minutes. What is it doing there, which it didnt have to do earlier?
 
 
 ![image](/images/260608/morepower-graph.png)
 
 The answer was, waiting... a lot of it.  Following the blocks in red from pprof output, the bulk of the time is now in the *runtime.chansend* and *runtime.chanrecv*, which is the overhead of using Go channels.  Taking a step back, the work being done was  CPU bound and could be quickly done. The communication overhead between channels overshadows this time.
 
- 
+
+
+## More Power, no channels
+
+This was [implemented](https://github.com/bobbyphilip/go-sandbox/tree/9cbbd31ecba2cf2b4d92419a4e8b233e41f751d5) with a bit of rework and removing the sending of messages on go channel, no channels. All that happens is that we have a bunch of workers, they hammer away on their assigned number of tasks and then finally report back on the number of co-primes they found. This is essentially the same as our single threaded version, but now on all CPUs.
+
+![image](/images/260608/parallelism-time.png)
+
+🎉 Execution time has fallen to 3.9s. system time (kernel) is now back to almost 0, the cpu time is 1567%, which matches the 16 cpus I have available. User time is around 60 second, as this includes time on all CPUs.
+
+
+![image](/images/260608/parallelism-graph.png)
+
+This also looks much better now and is only doing the work we actually want it to
+
+
+
 ---
 
 
