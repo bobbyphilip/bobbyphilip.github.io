@@ -23,10 +23,12 @@ I ran the benchmarking tests on a Linux environment powered by an AMD Ryzen 7 58
 I am generating numbers in the range 1 - 1 billion and counting the results from 1 billion pairs.
 
 The [first](https://github.com/bobbyphilip/go-sandbox/commit/a4b1dcdff0d30013c13b987eeb4ad07f26981314) naive implementation doesnt try to do anything clever and just hammers away at the problem.
-![image](images/260608-baseline.jpg)
+
+![image](images/260608-baseline.png)
 
 and 
-![image](images/260608/baseline.jpg)
+
+![image](images/260608/baseline.png)
 
 Looks like we have π, if we dont look very hard.  It took about a minute to run, wall time and cpu time are pretty much the same.
 
