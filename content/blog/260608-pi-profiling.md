@@ -74,13 +74,15 @@ Turns out, pretty much everything. The wall time for completing this has shot up
 
 ![image](/images/260608/morepower-graph.png)
 
-The answer was, waiting... a lot of it.  Following the blocks in red from pprof output, the bulk of the time is now in the *runtime.chansend* and *runtime.chanrecv*, which is the overhead of using Go channels.  Taking a step back, the work being done was  CPU bound and could be quickly done. The communication overhead between channels overshadows this time.
+The answer was, waiting... a lot of it.  Following the blocks in red from pprof output, the bulk of the time is now in the *runtime.chansend* and *runtime.chanrecv*, which is the overhead of using Go channels.  
+
+Taking a step back, the work being done was  CPU bound and could be quickly done. The communication overhead between channels overshadows this time.
 
 
 
 ## More Power, no channels
 
-This was [implemented](https://github.com/bobbyphilip/go-sandbox/blob/9cbbd31ecba2cf2b4d92419a4e8b233e41f751d5/cmd/coprime-pi/main.go) with a bit of rework and removing the sending of messages on go channel, no channels. All that happens is that we have a bunch of workers, they hammer away on their assigned number of tasks and then finally report back on the number of co-primes they found. This is essentially the same as our single threaded version, but now on all CPUs.
+This was [implemented](https://github.com/bobbyphilip/go-sandbox/blob/9cbbd31ecba2cf2b4d92419a4e8b233e41f751d5/cmd/coprime-pi/main.go) with a bit of rework and removing the sending of messages via channels. All that happens is that we have a bunch of workers, they hammer away on their assigned number of tasks and then finally report back on the number of co-primes they found. This is essentially the same as our single threaded version, but now on all CPUs.
 
 Go's random generator can suffer from lock contention in this scenario. To avoid this, a local *rand* was created per worker
 
@@ -90,7 +92,7 @@ Go's random generator can suffer from lock contention in this scenario. To avoid
 
 ![image](/images/260608/parallelism-graph.png)
 
-This also looks much better now and is only doing the work we actually want it to
+This also looks much better now and is only doing the work we actually want it to ( and not hanging around in the kernel space)
 
 ## Summary
 Using the output of *time*, when following the producer-consumer pattern, it was apparent that something was wrong because of the significant time in the kernel space. This coupled with looking at the visualisation  of the profiling output, helped in rapidly identifying the bottleneck. The simpler solution worked better. The overhead of managing the channel is higher than the mathematical cost of computing the GCD.
