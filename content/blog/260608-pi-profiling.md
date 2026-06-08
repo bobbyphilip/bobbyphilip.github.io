@@ -13,7 +13,7 @@ Matt Parker of [Stand-up Maths](https://www.youtube.com/@standupmaths) fame has 
 The rest of this post is based on [this](https://www.youtube.com/watch?v=RZBhSi_PwHU) video from 2017 and basically boils down to the fact that the probability of two random numbers being co-prime is 6/ π^2.  This comes from a famous problem in mathematical analysis called the [Basel Problem](https://en.wikipedia.org/wiki/Basel_problem) and was solved by Euler
 
 ---
-I have been using a lot of Claude at work and am trying to step away from it for my personal coding. After a lot of bike-shedding in getting my [vim-go](https://github.com/fatih/vim-go/) configured just right, I decided to try this out. The core problem is very simple and just involves calculating the GCD of 2 numbers and doing that for a lot of numbers to estimate the probability. I wanted to use some of the standard profiling tools to visualise the performance and optimise some of the low hanging fruit.There are probably smarter ways of calculating GCD ( or checking if numbers are co-prime), but that is not point of this post.
+I have been using a lot of Claude at work and am trying to step away from it for my personal coding. After a lot of [bike-shedding](https://github.com/bobbyphilip/dotfiles) in getting my [vim-go](https://github.com/fatih/vim-go/) configured just right, I decided to try this out. The core problem is very simple and just involves calculating the GCD of 2 numbers and doing that for a lot of numbers to estimate the probability. I wanted to use some of the standard profiling tools to visualise the performance and optimise some of the low hanging fruit.There are probably smarter ways of calculating GCD ( or checking if numbers are co-prime), but that is not point of this post.
  
 I ran the benchmarking tests on a Linux environment powered by an AMD Ryzen 7 5800H processor (8 cores, 16 threads)
 
@@ -82,10 +82,11 @@ The answer was, waiting... a lot of it.  Following the blocks in red from pprof 
 
 This was [implemented](https://github.com/bobbyphilip/go-sandbox/blob/9cbbd31ecba2cf2b4d92419a4e8b233e41f751d5/cmd/coprime-pi/main.go) with a bit of rework and removing the sending of messages on go channel, no channels. All that happens is that we have a bunch of workers, they hammer away on their assigned number of tasks and then finally report back on the number of co-primes they found. This is essentially the same as our single threaded version, but now on all CPUs.
 
+Go's random generator can suffer from lock contention in this scenario. To avoid this a local *rand* was created per worker
+
 ![image](/images/260608/parallelism-time.png)
 
 🎉 Execution time has fallen to 3.9s. system time (kernel) is now back to almost 0, the cpu time is 1567%, which matches the 16 cpus I have available. User time is around 60 second, as this includes time on all CPUs.  This time is close to our initial time before any optimisation, so all we  have done at this point is excellently parallelise stuff
-
 
 ![image](/images/260608/parallelism-graph.png)
 
