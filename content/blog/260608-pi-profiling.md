@@ -30,15 +30,29 @@ Looks like we have π, if we dont look too closely.
 It took about a minute to run. Wall time and cpu time are pretty much the same, as expected since there is only 1 thread running
 
 
-## Enable profiling
+### Enable profiling
 I [enabled](https://github.com/bobbyphilip/go-sandbox/commit/b6c8a5081078d54f241978b5a5ad7deb62c0a199) cpu profiling using Go's ```runtime/pprof``` package
 
-After running the code again, a ```cpu.prof`` is created and the data can be visualised and seen in your browser with ```go tool pprof -http=:8080 cpu.prof ```
+After running the code again, a *cpu.prof* is created and the data can be visualised and seen in your browser with 
+> go tool pprof -http=:8080 cpu.prof ```
 
 
 ![image](/images/260608/baseline-pprof.png)
 
 Again nothing too surprising, about 70% of time is in the gcd calculation and 30% is generating random numbers.  At this point, I am not sure how to generate random numbers faster, but we will cross that bridge when we get there, if we need to.
+
+
+## Quick win
+
+This is based on the idea that we dont really need to calculate the GCD for all the pairs.  For example, if both numbers are even, we know that they are not coprime.  This will occur about 25% of the time.
+I added some code to short-circuit the *isCoprime* function, if the inputs are either multiples of 2 or multiples of 3.
+
+![image](/images/260608/step1.png)
+
+This has knocked off about 13 seconds from the time, so around 20% less time
+
+![image](/images/260608/step1-pprof.png)
+
 
 ---
 
