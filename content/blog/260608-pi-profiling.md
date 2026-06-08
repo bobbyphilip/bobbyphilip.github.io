@@ -45,7 +45,12 @@ Again nothing too surprising, about 70% of time is in the gcd calculation and 30
 ## Quick win
 
 This is based on the idea that we dont really need to calculate the GCD for all the pairs.  For example, if both numbers are even, we know that they are not coprime.  This will occur about 25% of the time.
+
+![image](/images/260608/shortcircuit.png)
+
 I added some code to short-circuit the *isCoprime* function, if the inputs are either multiples of 2 or multiples of 3.
+
+
 
 ![image](/images/260608/step1.png)
 
