@@ -91,7 +91,10 @@ This was [implemented](https://github.com/bobbyphilip/go-sandbox/blob/9cbbd31ecb
 
 This also looks much better now and is only doing the work we actually want it to
 
+## Summary
+Using the output of *time*, when following the producer-consumer pattern, it was apparent that something was wrong because of the significant time in the kernel space. This coupled with looking at the visualisation  of the profiling output, helped in rapidly identifying the bottleneck. The simpler solution worked better. The overhead of managing the channel is higher than the mathematical cost of computing the GCD.
 
+There are some more optimised algorithms for calculating GCD like [Stein's algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm), however the standard Euclidean algorithm is pretty good and more importantly easy to read
 
 ---
 
