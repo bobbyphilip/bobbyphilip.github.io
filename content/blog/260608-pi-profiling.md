@@ -34,7 +34,7 @@ It took about a minute to run. Wall time and cpu time are pretty much the same, 
 I [enabled](https://github.com/bobbyphilip/go-sandbox/commit/b6c8a5081078d54f241978b5a5ad7deb62c0a199) cpu profiling using Go's ```runtime/pprof``` package
 
 After running the code again, a *cpu.prof* is created and the data can be visualised and seen in your browser with 
-> go tool pprof -http=:8080 cpu.prof ```
+> go tool pprof -http=:8080 cpu.prof
 
 
 ![image](/images/260608/baseline-pprof.png)
@@ -59,6 +59,24 @@ This has knocked off about 13 seconds from the time, so around 20% less time
 ![image](/images/260608/step1-pprof.png)
 
 
+
+## More Power
+
+Hey I paid for all those cpu cores, and only 1 of them is being used. Also Go is great for concurrency with channels and goroutines.
+
+I have now [implemented](https://github.com/bobbyphilip/go-sandbox/blob/65678f19a81596ae6c2112f484f4c6166d575f26/cmd/coprime-pi/main.go) the producer-consumer pattern. Producers now generate random numbers and sends them as jobs to a channel.
+Consumers get the jobs from the channel, check if they are co-prime and eventually the number of coprimes get totalled up.  What could go wrong?
+
+![image](/images/260608/morepower-time.png)
+
+Turns out, pretty much everything. The wall time for completing this has shot up to 350 seconds.  The only silver lining is the cpu usage has gone up from 100% to 423%,  which is still only about 25% of what it can go up to. System time, which is the amount of CPU time spent inside the Linux kernel has gone up to around 4 minutes. What is it doing there, which it didnt have to do earlier.
+
+
+![image](/images/260608/morepower-graph.png)
+
+The answer was, waiting... a lot of it.  Following the blocks in red from pprof output, the bulk of the time is now in the *runtime.chansend* and *runtime.chanrecv*, which is the overhead of using Go channels.  Taking a step back, the work being done was  CPU bound and could be quickly done. The communication overhead between channels overshadows this time.
+
+ 
 ---
 
 
