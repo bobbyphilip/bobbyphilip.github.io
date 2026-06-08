@@ -80,11 +80,11 @@ The answer was, waiting... a lot of it.  Following the blocks in red from pprof 
 
 ## More Power, no channels
 
-This was [implemented](https://github.com/bobbyphilip/go-sandbox/tree/9cbbd31ecba2cf2b4d92419a4e8b233e41f751d5) with a bit of rework and removing the sending of messages on go channel, no channels. All that happens is that we have a bunch of workers, they hammer away on their assigned number of tasks and then finally report back on the number of co-primes they found. This is essentially the same as our single threaded version, but now on all CPUs.
+This was [implemented](https://github.com/bobbyphilip/go-sandbox/blob/9cbbd31ecba2cf2b4d92419a4e8b233e41f751d5/cmd/coprime-pi/main.go) with a bit of rework and removing the sending of messages on go channel, no channels. All that happens is that we have a bunch of workers, they hammer away on their assigned number of tasks and then finally report back on the number of co-primes they found. This is essentially the same as our single threaded version, but now on all CPUs.
 
 ![image](/images/260608/parallelism-time.png)
 
-🎉 Execution time has fallen to 3.9s. system time (kernel) is now back to almost 0, the cpu time is 1567%, which matches the 16 cpus I have available. User time is around 60 second, as this includes time on all CPUs.
+🎉 Execution time has fallen to 3.9s. system time (kernel) is now back to almost 0, the cpu time is 1567%, which matches the 16 cpus I have available. User time is around 60 second, as this includes time on all CPUs.  This time is close to our initial time before any optimisation, so all we  have done at this point is excellently parallelise stuff
 
 
 ![image](/images/260608/parallelism-graph.png)
