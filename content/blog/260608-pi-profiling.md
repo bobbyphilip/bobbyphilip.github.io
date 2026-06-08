@@ -26,7 +26,19 @@ The [first](https://github.com/bobbyphilip/go-sandbox/commit/a4b1dcdff0d30013c13
 
 ![image](/images/260608/baseline.png)
 
-Looks like we have π, if we dont look very hard.  It took about a minute to run, wall time and cpu time are pretty much the same.
+Looks like we have π, if we dont look too closely.
+It took about a minute to run. Wall time and cpu time are pretty much the same, as expected since there is only 1 thread running
+
+
+## Enable profiling
+I [enabled](https://github.com/bobbyphilip/go-sandbox/commit/b6c8a5081078d54f241978b5a5ad7deb62c0a199) cpu profiling using Go's ```runtime/pprof``` package
+
+After running the code again, a ```cpu.prof`` is created and the data can be visualised and seen in your browser with ```go tool pprof -http=:8080 cpu.prof ```
+
+
+![image](/images/260608/baseline-pprof.png)
+
+Again nothing too surprising, about 70% of time is in the gcd calculation and 30% is generating random numbers.  At this point, I am not sure how to generate random numbers faster, but we will cross that bridge when we get there, if we need to.
 
 ---
 
